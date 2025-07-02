@@ -15,7 +15,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 
-
+import socket
 from flask import Flask, request
 from queue import Queue
 from services.webhook import send_webhook
@@ -200,5 +200,14 @@ def create_app():
 
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8941)
+def get_free_port():
+    s = socket.socket()
+    s.bind(('', 0))  # 0 = auto-pick free port
+    addr, port = s.getsockname()
+    s.close()
+    return port
+
+
+if __name__ == "__main__":
+    free_port = get_free_port()
+    app.run(host="0.0.0.0", port=free_port)
